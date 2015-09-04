@@ -23,9 +23,18 @@ public class PrepareDataMapper extends Mapper<LongWritable, Text, Text, Text> {
         String[] array = value.toString().split(",");
 
         if (!(line.length() == 0)) {
-            //id,  YEAR, NETWORK, LABOREXP, STAFF, ELECEXP, KWH, TOTCOST,  LABOR,  ELEC,  CAPITAL
-            context.write(new Text(array[0] ), new Text(String.format("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s",
+
+            if(array[0].equals("id") ) {
+                System.out.println("!!!!!!!!!! writing header line "+line);
+                //id,  YEAR, NETWORK, LABOREXP, STAFF, ELECEXP, KWH, TOTCOST,  LABOR,  ELEC,  CAPITAL
+                context.write(new Text(array[0]), new Text(String.format("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s",
+                        array[1], array[4], array[5], array[6], array[7], array[8], array[9], array[22], array[23], array[24])));
+            } else {
+
+                context.write(new Text(array[0] ), new Text(String.format("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s",
                     array[1], array[4], array[5], array[6], array[7], array[8], array[9], array[22], array[23] , array[24] ) ));
+
+            }
         }
     }
 
