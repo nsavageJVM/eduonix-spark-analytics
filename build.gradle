@@ -1,0 +1,86 @@
+group 'eduonix-spark-analytics'
+
+apply plugin: 'java'
+apply plugin: "idea"
+apply plugin: "scala"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+// Specify any additional project properties.
+ext {
+    slf4jVersion = "1.7.5"
+    // from horton-works repo. They compile mahout-core against hadoop2.x. These
+    hadoopVersion = "2.4.0.2.1.2.0-402"
+
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://repo.hortonworks.com/content/repositories/releases/"
+    }
+}
+
+
+tasks.withType(AbstractCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:all"
+}
+
+tasks.withType(ScalaCompile) {
+    // Enables incremental compilation.
+    // http://www.gradle.org/docs/current/userguide/userguide_single.html#N12F78
+    scalaCompileOptions.useAnt = false
+}
+
+
+sourceSets {
+    main {
+        java.srcDirs = [];
+        scala.srcDirs = ["src/main/scala", "src/main/java"]
+    }
+}
+
+
+dependencies {
+
+    // from horton-works repo. They compile mahout-core against hadoop2.x
+    compile "org.apache.hadoop:hadoop-client:${hadoopVersion}"
+    compile 'org.scala-lang:scala-library:2.11.0'
+
+}
+
+
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+
+    manifest {
+        attributes 'Implementation-Title': 'PrepareData',
+                'Implementation-Version': '1',
+                'Main-Class': 'com.eduonix.prepare.PrepareData'
+    }
+
+
+    baseName = 'uber-prep'
+
+    from(configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }) {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+
+    with jar
+}
+
+
+
+
+
+
+
+
+
+
+
