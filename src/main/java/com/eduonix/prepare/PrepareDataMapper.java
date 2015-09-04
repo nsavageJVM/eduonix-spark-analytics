@@ -14,26 +14,17 @@ import java.io.IOException;
 public class PrepareDataMapper extends Mapper<LongWritable, Text, Text, Text> {
 
 
-    int counter= 0;
-
     @Override
     public void map(LongWritable key, Text value, org.apache.hadoop.mapreduce.Mapper.Context context)
             throws IOException, InterruptedException {
 
-        if(counter ==0 ) {
-            System.out.println("!!!!!!!!!! writing header line ");
-            //id,  YEAR, NETWORK, LABOREXP, STAFF, ELECEXP, KWH, TOTCOST,  LABOR,  ELEC,  CAPITAL
-            context.write(new Text("id"),
-                    new Text(String.format("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s", "YEAR", "NETWORK", "LABOREXP", "STAFF", "ELECEXP","KWH", "TOTCOST", "LABOR",  "ELEC", "CAPITAL" )));
-            counter++;
-        }
 
         String line = value.toString();
 
         String[] array = value.toString().split(",");
 
         if (!(line.length() == 0)) {
-            
+
                 context.write(new Text(array[0] ), new Text(String.format("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s",
                     array[1], array[4], array[5], array[6], array[7], array[8], array[9], array[22], array[23] , array[24] ) ));
 
